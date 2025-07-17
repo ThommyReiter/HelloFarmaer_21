@@ -16,9 +16,13 @@ final ValueNotifier<Locale> localeNotifier = ValueNotifier(const Locale('pt'));
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await initNotifications();
-  await solicitarPermissoesNotificacoes();
+  try {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    await initNotifications();
+    await solicitarPermissoesNotificacoes();
+  } catch (e) {
+    print('Erro ao inicializar Firebase: $e');
+  }
   runApp(const MainApp());
 }
 
@@ -44,7 +48,6 @@ class MainApp extends StatelessWidget {
                 theme: ThemeData.light(),
                 darkTheme: ThemeData.dark(),
                 themeMode: currentMode,
-
                 locale: currentLocale,
                 localizationsDelegates: const [
                   AppLocalizations.delegate,
@@ -52,14 +55,12 @@ class MainApp extends StatelessWidget {
                   GlobalWidgetsLocalizations.delegate,
                   GlobalCupertinoLocalizations.delegate,
                 ],
-
                 supportedLocales: const [
                   Locale('en'),
                   Locale('pt'),
                   Locale('fr'),
                   Locale('es'),
                 ],
-
                 routes: Routes.routes,
                 initialRoute: Routes.splash,
               ),
